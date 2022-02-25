@@ -1,8 +1,6 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Product, ProductTitle } from './interfaces';
-
+import { Product } from './interfaces';
 import { ProductsService } from './services';
 
 @Component({
@@ -13,17 +11,21 @@ import { ProductsService } from './services';
 export class AppComponent implements OnInit, OnDestroy {
   title = 'products';
 
-  length = 0;
-  pageSize = 6;
-  pageIndex = 0;
-  pageSizeOptions = [6, 9, 12];
-  showFirstLastButtons = true;
-
   products: Product[] = [];
-  private productTitles: ProductTitle[] = [];
-  paginationProductTitles: ProductTitle[] = [];
+  currentProduct: Product[] = [];
+  entries: any;
+
+  hidden: boolean = true;
+
   private subscription: Subscription = new Subscription();
-  displayedColumns: string[] = ['position', 'name'];
+
+  private windowInnerHeight = document.documentElement.clientHeight;
+  cardInnerHeight = (this.windowInnerHeight - 68) + 'px';
+  tableInnerHeight = (this.windowInnerHeight - 174) + 'px';
+  tableInnerHeightWithButton = (this.windowInnerHeight - 220) + 'px';
+
+  displayedColumnsSideLeft: string[] = ['position', 'name'];
+  displayedColumnsSideRight: string[] = ['property', 'value'];
 
   constructor(private productsService: ProductsService) { }
 
@@ -34,36 +36,55 @@ export class AppComponent implements OnInit, OnDestroy {
   private getProducts(): Subscription {
     return this.productsService.getProducts().subscribe((objects: Product[]) => {
       this.products = objects;
-      this.convertProductTitles();
-      this.paginationProductTitles = this.productTitles.slice(0, this.pageSize);
-      this.length = this.productTitles.length;
     });
   }
 
-  private convertProductTitles(): void {
-    const productTitles = this.products.map((item) => item.ProductDescription);
-    for(let i = 0, position = 1; i < productTitles.length; i++, position++) {
-      const tempProductTitle: any = {};
-      tempProductTitle.position = position;
-      tempProductTitle.name = productTitles[i];
-      this.productTitles.push(tempProductTitle);
+  private returnToStartState(): void {
+    const trNodes: any = document.getElementsByTagName("tr");
+
+    for (let tr of trNodes) {
+      tr.classList.remove("row-is-clicked");
     }
+
   }
 
-  handlePageEvent(event: PageEvent): void {
-    this.length = event.length;
-    this.pageSize = event.pageSize;
-    this.pageIndex = event.pageIndex;
+  setKeyValueObject(object: Product): void {
+    const filterProducts = Object.entries(object).filter(key => key[0] !== "ProductId").filter(key => key[0] !== "ProductDescription");
+    filterProducts.forEach(item => {
+      if (item[1] === null) item[1] = "it's unknown";
+    });
+    this.entries = filterProducts;
+    console.log('temp :>> ', this.entries);
+  }
 
-    const startIndex = event.pageIndex * event.pageSize;
+  clickOnRows(event: Event): void {
+    this.returnToStartState();
 
-    let endIndex = startIndex + event.pageSize;
+    let tableRow: any = event.currentTarget;
+    tableRow.classList.add("row-is-clicked");
 
-    if (endIndex > this.productTitles.length) {
-      endIndex = this.productTitles.length;
-    }
+    const lastNameOnClick = tableRow.lastElementChild.textContent.trim();
+    console.log('lastNameOnClick :>> ', lastNameOnClick);
+    const tempCurrentProduct: any = this.products.find(item => item.ProductDescription === lastNameOnClick);
+    this.currentProduct.pop();
+    this.currentProduct.push(tempCurrentProduct);
+    this.setKeyValueObject(tempCurrentProduct);
 
-    this.paginationProductTitles = this.productTitles.slice(startIndex, endIndex);
+    this.hidden = false;
+
+    document.addEventListener('click', (event): void => {
+      const currentTarget: any = event.target;
+      const tagOnClick = currentTarget.tagName.toLowerCase();
+
+      if (tagOnClick !== 'td') {
+        this.returnToStartState();
+      }
+    });
+
+  }
+
+  close(): void {
+    this.hidden = true;
   }
 
   ngOnDestroy(): void {
