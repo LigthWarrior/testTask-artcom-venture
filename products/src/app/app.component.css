@@ -1,6 +1,7 @@
 .title {
   text-align: center;
-  margin-top: 10px;
+  padding-top: 10px;
+  font-weight: 500;
 }
 
 .container {
@@ -10,17 +11,39 @@
 
 .card {
   width: 49%;
-  max-height: 768px;
-  /* overflow-y: scroll; */
+}
+
+.table-wrapper {
+  overflow-y: auto;
 }
 
 .table {
   width: 100%;
+  border-spacing: 0;
 }
 
 .mat-column-position {
   width: 32px;
-  /* border-right: 1px solid currentColor; */
   padding-right: 24px;
   text-align: center;
+}
+
+.text-color-green {
+  color: darkgreen;
+}
+
+.text-color-red {
+  color: darkred;
+}
+
+.row-is-clicked {
+  font-weight: bold;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.width-cell {
+  width: 50%;
 }

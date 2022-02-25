@@ -1,39 +1,103 @@
-<h1 class="title">Products</h1>
+<h1 class="title text-color-red">Products</h1>
 <div class="container">
-  <mat-card class="card">
-      <mat-card-title>List of product names</mat-card-title>
-      <div class="mat-elevation-z8">
-        <table mat-table [dataSource]="paginationProductTitles" class="mat-elevation-z8 table">
-        <!-- Position Column -->
+  <mat-card [style.height]="cardInnerHeight" class="card">
+    <mat-card-title class="text-color-green">List of product names</mat-card-title>
+
+    <table mat-table class="table">
+      <ng-container matColumnDef="position">
+        <th
+          mat-header-cell
+          class="text-color-green"
+          *matHeaderCellDef
+        >
+        No.
+        </th>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th
+          mat-header-cell
+          class="text-color-green"
+          *matHeaderCellDef
+        >
+        Name
+        </th>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsSideLeft"></tr>
+    </table>
+
+    <div [style.height]="tableInnerHeight" class="table-wrapper">
+      <table
+        mat-table
+        [dataSource]="products"
+        class="table"
+      >
         <ng-container matColumnDef="position">
           <th mat-header-cell *matHeaderCellDef> No. </th>
-          <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+          <td mat-cell *matCellDef="let i=index"> {{i+1}} </td>
         </ng-container>
-        <!-- Name Column -->
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef> Name </th>
-          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.ProductDescription}} </td>
         </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr
+          mat-row
+          (click)="clickOnRows($event)"
+          *matRowDef="let row; columns: displayedColumnsSideLeft;"
+        >
+        </tr>
       </table>
-
-      <mat-paginator
-        (page)="handlePageEvent($event)"
-        [length]="length"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="pageSizeOptions"
-        [showFirstLastButtons]="showFirstLastButtons"
-        [pageIndex]="pageIndex"
-      >
-      </mat-paginator>
     </div>
+
   </mat-card>
-  <mat-card class="card">
-    <mat-card-title>Product properties</mat-card-title>
+  <mat-card
+   [style.height]="cardInnerHeight"
+   [class.hidden]="hidden"
+   class="card"
+  >
+    <mat-card-title class="text-color-green">Product properties</mat-card-title>
+
+    <table mat-table class="table">
+      <ng-container matColumnDef="property">
+        <th
+          mat-header-cell
+          class="width-cell text-color-green"
+          *matHeaderCellDef
+        >
+        Property
+      </th>
+      </ng-container>
+      <ng-container matColumnDef="value">
+        <th
+          mat-header-cell
+          class="text-color-green"
+          *matHeaderCellDef
+        >
+        Value
+        </th>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsSideRight"></tr>
+    </table>
+
+    <div [style.height]="tableInnerHeightWithButton" class="table-wrapper">
+      <div *ngFor="let item of entriesCurrentProduct">
+        <table class="table">
+          <tr class="mat-row">
+            <td class="mat-cell width-cell">{{item[0]}}</td>
+            <td class="mat-cell width-cell">{{item[1]}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
     <mat-card-actions align="end">
-      <button mat-button>Close</button>
+      <button
+        mat-button
+        (click)="close()"
+        class="text-color-red"
+      >
+      Close
+      </button>
     </mat-card-actions>
+
   </mat-card>
 </div>
