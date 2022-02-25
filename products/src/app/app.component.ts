@@ -12,8 +12,7 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'products';
 
   products: Product[] = [];
-  currentProduct: Product[] = [];
-  entries: any;
+  entriesCurrentProduct: any;
 
   hidden: boolean = true;
 
@@ -53,8 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
     filterProducts.forEach(item => {
       if (item[1] === null) item[1] = "it's unknown";
     });
-    this.entries = filterProducts;
-    console.log('temp :>> ', this.entries);
+    this.entriesCurrentProduct = filterProducts;
   }
 
   clickOnRows(event: Event): void {
@@ -64,11 +62,8 @@ export class AppComponent implements OnInit, OnDestroy {
     tableRow.classList.add("row-is-clicked");
 
     const lastNameOnClick = tableRow.lastElementChild.textContent.trim();
-    console.log('lastNameOnClick :>> ', lastNameOnClick);
-    const tempCurrentProduct: any = this.products.find(item => item.ProductDescription === lastNameOnClick);
-    this.currentProduct.pop();
-    this.currentProduct.push(tempCurrentProduct);
-    this.setKeyValueObject(tempCurrentProduct);
+    const currentProduct: any = this.products.find(item => item.ProductDescription === lastNameOnClick);
+    this.setKeyValueObject(currentProduct);
 
     this.hidden = false;
 
