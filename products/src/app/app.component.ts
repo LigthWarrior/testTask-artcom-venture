@@ -1,22 +1,26 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+// I have done commented out the service, because the project wasn't deploiting for GitPages.
+
+import { Component } from '@angular/core';
+// import { Subscription } from 'rxjs';
 import { Product } from './interfaces';
-import { ProductsService } from './services';
+import { PRODUCTS } from './data';
+// import { ProductsService } from './services';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent {
   title = 'products';
 
-  products: Product[] = [];
+  // products: Product[] = [];
+  products: Product[] = PRODUCTS;
   entriesCurrentProduct: any;
 
   hidden: boolean = true;
 
-  private subscription: Subscription = new Subscription();
+  // private subscription: Subscription = new Subscription();
 
   private windowInnerHeight = document.documentElement.clientHeight;
   cardInnerHeight = (this.windowInnerHeight - 68) + 'px';
@@ -26,17 +30,17 @@ export class AppComponent implements OnInit, OnDestroy {
   displayedColumnsSideLeft: string[] = ['position', 'name'];
   displayedColumnsSideRight: string[] = ['property', 'value'];
 
-  constructor(private productsService: ProductsService) { }
+  // constructor(private productsService: ProductsService) { }
 
-  ngOnInit(): void {
-      this.subscription.add(this.getProducts());
-  }
+  // ngOnInit(): void {
+  //     this.subscription.add(this.getProducts());
+  // }
 
-  private getProducts(): Subscription {
-    return this.productsService.getProducts().subscribe((objects: Product[]) => {
-      this.products = objects;
-    });
-  }
+  // private getProducts(): Subscription {
+  //   return this.productsService.getProducts().subscribe((objects: Product[]) => {
+  //     this.products = objects;
+  //   });
+  // }
 
   private returnToStartState(): void {
     const trNodes: any = document.getElementsByTagName("tr");
@@ -82,7 +86,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.hidden = true;
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
+  // ngOnDestroy(): void {
+  //   this.subscription.unsubscribe();
+  // }
 }
